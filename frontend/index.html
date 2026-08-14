@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Voice Indic RAG | HH Goa 2026</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=Plus+Jakarta+Sans:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+    <div class="ambient-glow glow-1"></div>
+    <div class="ambient-glow glow-2"></div>
+
+    <div class="app-container">
+        <!-- Top Header Navigation -->
+        <header class="glass-header">
+            <div class="brand">
+                <div class="logo-icon">
+                    <svg viewBox="0 0 24 24" width="24" height="24" stroke="currentColor" stroke-width="2" fill="none">
+                        <path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"></path>
+                        <path d="M19 10v2a7 7 0 0 1-14 0v-2"></path>
+                        <line x1="12" y1="19" x2="12" y2="23"></line>
+                        <line x1="8" y1="23" x2="16" y2="23"></line>
+                    </svg>
+                </div>
+                <div>
+                    <h1 class="app-title">Voice Indic RAG</h1>
+                    <span class="hackathon-tag">HH Goa 2026 • Task 2</span>
+                </div>
+            </div>
+
+            <div class="header-badges">
+                <div class="status-pill" id="system-status">
+                    <span class="pulse-dot"></span>
+                    <span id="status-text">System Active</span>
+                </div>
+                <div class="badge" id="index-stat">
+                    <span class="badge-label">FAISS Chunks:</span>
+                    <span class="badge-val" id="total-chunks-count">--</span>
+                </div>
+            </div>
+        </header>
+
+        <!-- Main Layout Grid -->
+        <main class="main-layout">
+            <!-- Left Panel: Voice & Text Query Panel -->
+            <section class="panel glass-card query-panel">
+                <div class="panel-header">
+                    <div class="section-title-wrap">
+                        <span class="section-badge">Step 1</span>
+                        <h2>Voice & Query Input</h2>
+                    </div>
+                </div>
+
+                <!-- Strategy & Language Selectors -->
+                <div class="control-row">
+                    <div class="control-group">
+                        <label for="strategy-select">Chunking Strategy</label>
+                        <select id="strategy-select" class="custom-select">
+                            <option value="metadata_aware" selected>3. Metadata-Aware (Recommended)</option>
+                            <option value="sentence_semantic">2. Sentence Semantic</option>
+                            <option value="hierarchical">4. Hierarchical Parent-Child</option>
+                            <option value="fixed_size">1. Fixed-Size (256/64)</option>
+                        </select>
+                    </div>
+
+                    <div class="control-group">
+                        <label for="language-select">Target Language</label>
+                        <select id="language-select" class="custom-select">
+                            <option value="hi" selected>Hindi (हिन्दी)</option>
+                            <option value="en">English</option>
+                            <option value="bn">Bengali (বাংলা)</option>
+                            <option value="ta">Tamil (தமிழ்)</option>
+                        </select>
+                    </div>
+                </div>
+
+                <!-- Big Voice Mic Interaction Section -->
+                <div class="voice-hero">
+                    <div class="mic-button-wrapper">
+                        <button id="mic-btn" class="mic-action-btn" title="Click to start/stop speaking">
+                            <div class="mic-waves"></div>
+                            <svg class="mic-svg" viewBox="0 0 24 24" width="32" height="32" stroke="currentColor" stroke-width="2.2" fill="none">
+                                <path d="M12 2a3 3 0 0 0-3 3v7a3 3 0 0 0 6 0V5a3 3 0 0 0-3-3Z"/>
+                                <path d="M19 10v2a7 7 0 0 1-14 0v-2"/>
+                                <line x1="12" y1="19" x2="12" y2="22"/>
+                            </svg>
+                        </button>
+                    </div>
+                    <div class="voice-status-text" id="voice-status-label">Click Microphone to speak your query</div>
+                    <div class="audio-timer" id="recording-timer">00:00</div>
+                </div>
+
+                <!-- Text Query Fallback Input -->
+                <div class="text-input-wrap">
+                    <label for="text-query-input">Or Type Query in Indic / English:</label>
+                    <div class="search-box">
+                        <input type="text" id="text-query-input" placeholder="उदा: भारत की राजधानी क्या है? या ताजमहल कहाँ है?" />
+                        <button id="send-query-btn" class="btn primary-btn">
+                            <span>Search</span>
+                            <svg viewBox="0 0 24 24" width="18" height="18" stroke="currentColor" stroke-width="2" fill="none">
+                                <path d="m9 18 6-6-6-6"/>
+                            </svg>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Quick Prompt Chips -->
+                <div class="chips-container">
+                    <span class="chips-label">Try Samples:</span>
+                    <button class="chip" data-query="भारत की राजधानी क्या है?">🇮🇳 भारत की राजधानी</button>
+                    <button class="chip" data-query="ताजमहल किसने और कहाँ बनवाया था?">🏛️ ताजमहल का इतिहास</button>
+                    <button class="chip" data-query="सौर ऊर्जा के क्या लाभ हैं?">☀️ सौर ऊर्जा</button>
+                    <button class="chip" data-query="What is Retrieval Augmented Generation?">🤖 What is RAG?</button>
+                </div>
+            </section>
+
+            <!-- Right Panel: Results & Latency Analytics -->
+            <section class="panel glass-card results-panel">
+                <div class="panel-header">
+                    <div class="section-title-wrap">
+                        <span class="section-badge">Step 2</span>
+                        <h2>Grounded Generation & Latency</h2>
+                    </div>
+                    <button id="run-benchmark-btn" class="btn secondary-btn small-btn">
+                        ⚡ Run Latency Benchmark
+                    </button>
+                </div>
+
+                <!-- Live Latency Metric Cards -->
+                <div class="latency-metrics-grid">
+                    <div class="metric-card">
+                        <div class="metric-title">STT / Voice</div>
+                        <div class="metric-value" id="lat-stt">0.0 ms</div>
+                    </div>
+                    <div class="metric-card">
+                        <div class="metric-title">FAISS Vector</div>
+                        <div class="metric-value" id="lat-retrieval">0.0 ms</div>
+                    </div>
+                    <div class="metric-card">
+                        <div class="metric-title">Groq Llama 3.1</div>
+                        <div class="metric-value" id="lat-llm">0.0 ms</div>
+                    </div>
+                    <div class="metric-card highlight-card">
+                        <div class="metric-title">Total E2E</div>
+                        <div class="metric-value highlight" id="lat-total">0.0 ms</div>
+                    </div>
+                </div>
+
+                <!-- Guardrails Status Strip -->
+                <div class="guardrails-strip" id="guardrail-indicator">
+                    <span class="guard-icon">🛡️</span>
+                    <span class="guard-text" id="guard-text">Guardrails: Safe & Grounded (100%)</span>
+                </div>
+
+                <!-- Generated Answer Output Box -->
+                <div class="answer-container">
+                    <div class="answer-header">
+                        <span class="answer-badge">AI Grounded Response</span>
+                        <span class="model-tag" id="model-tag">Llama-3.1-8B-Instant</span>
+                    </div>
+                    <div class="answer-content" id="answer-box">
+                        Your synthesized answer based on MSMARCO-XI retrieved passages will appear here.
+                    </div>
+                </div>
+
+                <!-- Retrieved Context Passages Collapsible Section -->
+                <div class="contexts-container">
+                    <div class="contexts-header" id="contexts-toggle">
+                        <h3>Retrieved Context Passages (<span id="context-count">0</span>)</h3>
+                        <span class="toggle-icon">▼</span>
+                    </div>
+                    <div class="context-cards-list" id="context-list">
+                        <!-- Populated by JS -->
+                    </div>
+                </div>
+            </section>
+        </main>
+
+        <!-- Benchmark Modal / Section -->
+        <div id="benchmark-modal" class="modal-backdrop hidden">
+            <div class="glass-card modal-card">
+                <div class="modal-header">
+                    <h2>Latency Percentiles Benchmark (P50 / P70 / P100)</h2>
+                    <button id="close-modal-btn" class="close-btn">&times;</button>
+                </div>
+                <div class="modal-body" id="benchmark-results-body">
+                    <div class="spinner-wrap" id="bench-loading">
+                        <div class="spinner"></div>
+                        <p>Executing 20 sequential test queries across full pipeline...</p>
+                    </div>
+                    <div id="bench-content" class="hidden">
+                        <div class="percentile-grid">
+                            <div class="percentile-pill">
+                                <span class="p-name">P50 (Median)</span>
+                                <span class="p-val" id="p50-val">--</span>
+                            </div>
+                            <div class="percentile-pill">
+                                <span class="p-name">P70</span>
+                                <span class="p-val" id="p70-val">--</span>
+                            </div>
+                            <div class="percentile-pill">
+                                <span class="p-name">P90</span>
+                                <span class="p-val" id="p90-val">--</span>
+                            </div>
+                            <div class="percentile-pill highlight">
+                                <span class="p-name">P100 (Max)</span>
+                                <span class="p-val" id="p100-val">--</span>
+                            </div>
+                        </div>
+                        <div class="stage-averages" id="stage-avg-content"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <footer class="glass-footer">
+            <p>Built for <strong>HH Goa 2026 Hackathon</strong> • Multilingual Indic Voice RAG with FAISS, Groq Llama 3.1 & Sarvam AI</p>
+        </footer>
+    </div>
+
+    <script src="/static/app.js"></script>
+</body>
+</html>
