@@ -50,7 +50,7 @@ User Voice Input / Audio
 [Context Assembly & Grounding Prompt]
        │
        ▼
-[Groq Llama 3.1 8B Instant]
+[Groq Llama 3.1   8B Instant]
        │
        ▼
 [Guardrails: Hallucination & Factuality Post-Check]
